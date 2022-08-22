@@ -292,7 +292,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             Screen.autorotateToLandscapeLeft = false;
             Screen.autorotateToLandscapeRight = false;
             Screen.autorotateToPortraitUpsideDown = false;
-            Screen.orientation = ScreenOrientation.Portrait;
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
 
             // Enable geospatial sample to target 60fps camera capture frame rate
             // on supported devices.
@@ -313,6 +313,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             {
                 Debug.LogError("Cannot find ARCoreExtensions.");
             }
+
         }
 
         /// <summary>
@@ -341,6 +342,8 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
 #endif
             LoadGeospatialAnchorHistory();
             _shouldResolvingHistory = _historyCollection.Collection.Count > 0;
+            
+            VisibleTrafficLights();
         }
 
         /// <summary>
@@ -755,6 +758,53 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 $"  VerticalAcc: {pose.VerticalAccuracy:F2}\n" +
                 $"  Heading: {pose.Heading:F2}\n" +
                 $"  HeadingAcc: {pose.HeadingAccuracy:F2}";
+        }
+
+        // ここから新規実装
+
+        private void VisibleTrafficLights()
+        {
+            var pose = EarthManager.CameraGeospatialPose;
+
+            GeospatialAnchorHistory history = new GeospatialAnchorHistory(
+                pose.Latitude, pose.Longitude, pose.Altitude, pose.Heading);
+
+            var anchor = PlaceTrafficLights(history);
+
+            if (anchor != null)
+            {
+                _historyCollection.Collection.Add(history);
+                StartCoroutine(CheckTerrainAnchorState(anchor));
+            }
+            else
+            {
+                SnackBarText.text = "Failed to set a terrain anchor!";
+            }
+
+            ClearAllButton.gameObject.SetActive(_historyCollection.Collection.Count > 0);
+            SaveGeospatialAnchorHistory();
+        }
+
+        private ARGeospatialAnchor PlaceTrafficLights(
+            GeospatialAnchorHistory history)
+        {
+            Quaternion quaternion =
+                Quaternion.AngleAxis(180f - (float)history.Heading, Vector3.up);
+
+            var anchor =
+                AnchorManager.ResolveAnchorOnTerrain(
+                    history.Latitude, history.Longitude, 0, quaternion);
+        
+            if (anchor != null)
+            {
+                GameObject anchorGO = Instantiate(TerrainPrefab, anchor.transform);
+            
+                anchor.gameObject.SetActive(false);
+
+                _anchorObjects.Add(anchor.gameObject);
+            }
+
+            return anchor;
         }
     }
 }
