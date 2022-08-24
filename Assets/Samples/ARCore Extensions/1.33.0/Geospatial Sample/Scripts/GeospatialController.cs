@@ -27,6 +27,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
     using UnityEngine.UI;
     using UnityEngine.XR.ARFoundation;
     using UnityEngine.XR.ARSubsystems;
+    using UnityEngine.SceneManagement;
 
     /// <summary>
     /// Controller for Geospatial sample.
@@ -283,6 +284,16 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             SaveGeospatialAnchorHistory();
         }
 
+        public void OnClickEnterTrafficLightSceneButton()
+        {
+            if (!_enablingGeospatial)
+            {
+                //return;
+            }
+            
+            SceneManager.LoadScene("TrafficLightsScene", LoadSceneMode.Additive);
+        }
+
         /// <summary>
         /// Unity's Awake() method.
         /// </summary>
@@ -292,7 +303,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             Screen.autorotateToLandscapeLeft = false;
             Screen.autorotateToLandscapeRight = false;
             Screen.autorotateToPortraitUpsideDown = false;
-            Screen.orientation = ScreenOrientation.Portrait;
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
 
             // Enable geospatial sample to target 60fps camera capture frame rate
             // on supported devices.

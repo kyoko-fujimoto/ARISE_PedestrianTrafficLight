@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Samples/ARCore Extensions/1.33.0/Geospatial Sample/Scenes/Geospatial.unity
     guid: 1ed15e9657253406185e4b2c7c5a4fc4
   - enabled: 1
-    path: Assets/Scenes/TrafficLights.unity
+    path: Assets/Scenes/TrafficLightsScene.unity
     guid: b755dfcb1d8954bb7b754b6c508c2087
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: fa01ab03579c74abb9b800e1d74acd54, type: 2}
