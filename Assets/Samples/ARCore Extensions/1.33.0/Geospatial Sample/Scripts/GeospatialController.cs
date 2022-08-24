@@ -286,12 +286,33 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
 
         public void OnClickEnterTrafficLightSceneButton()
         {
-            if (!_enablingGeospatial)
-            {
-                //return;
-            }
+            SceneManager.sceneLoaded += TrafficLightsSceneLoaded;
+
+            SceneManager.LoadScene("TrafficLightsScene");
+        }
+
+        private void TrafficLightsSceneLoaded(Scene next, LoadSceneMode mode)
+        {
+            // シーン切り替え後のスクリプトを取得
+            var trafficLightController = GameObject.Find("TrafficLightController").GetComponent<TrafficLightController>();
+    
+            var pose = EarthManager.CameraGeospatialPose;
             
-            SceneManager.LoadScene("TrafficLightsScene", LoadSceneMode.Additive);
+            GeospatialAnchorHistory history = new GeospatialAnchorHistory(
+                pose.Latitude, pose.Longitude, pose.Altitude, pose.Heading);
+            
+            Quaternion quaternion =
+                Quaternion.AngleAxis(180f - (float)history.Heading, Vector3.up);
+
+            var anchor = AnchorManager.ResolveAnchorOnTerrain(history.Latitude, history.Longitude, 0, quaternion);
+            
+            if (anchor != null)
+            {
+                trafficLightController.anchorPosition = anchor.transform.position;
+            }
+
+            // イベントから削除
+            SceneManager.sceneLoaded -= TrafficLightsSceneLoaded;
         }
 
         /// <summary>

@@ -18,6 +18,8 @@ public class TrafficLightController : MonoBehaviour
     private const int c_trafficLightsWidth = 30;
     private const int c_trafficLightsHeight = 10;
 
+    public Vector3 anchorPosition = new Vector3();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,7 +27,7 @@ public class TrafficLightController : MonoBehaviour
         {
             for (int j = 0; j < c_trafficLightsHeight; ++j)
             {
-                StartCoroutine( VisibleTrafficLight(new Vector3(i * 0.4f, j * 0.75f, 1), i, j)); 
+                StartCoroutine( VisibleTrafficLight(anchorPosition + new Vector3(i * 0.4f, j * 0.75f, 10), i, j)); 
             }
         }
     }
