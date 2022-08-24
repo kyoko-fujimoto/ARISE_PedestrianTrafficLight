@@ -3,7 +3,16 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - DirectionP1
+  - DirectionSC2
+  - Direction1
+  - PushButton
+  - DirectionP2
+  - Cars
+  - Human
+  - LightRed
+  - LightGreen
   layers:
   - Default
   - TransparentFX
