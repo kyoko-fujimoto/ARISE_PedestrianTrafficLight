@@ -203,6 +203,9 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         private GeospatialAnchorHistoryCollection _historyCollection = null;
         private List<GameObject> _anchorObjects = new List<GameObject>();
 
+        public GameObject button;
+        public GameObject text;
+
         /// <summary>
         /// Callback handling "Get Started" button click event in Privacy Prompt.
         /// </summary>
@@ -288,7 +291,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
         {
             SceneManager.sceneLoaded += TrafficLightsSceneLoaded;
 
-            SceneManager.LoadScene("TrafficLightsScene");
+            SceneManager.LoadScene("TrafficLightsScene", LoadSceneMode.Additive);
         }
 
         private void TrafficLightsSceneLoaded(Scene next, LoadSceneMode mode)
@@ -309,7 +312,11 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
             if (anchor != null)
             {
                 trafficLightController.anchorPosition = anchor.transform.position;
+                trafficLightController.anchorQuaternion = quaternion;
             }
+
+            button.SetActive(false);
+            text.SetActive(false);
 
             // イベントから削除
             SceneManager.sceneLoaded -= TrafficLightsSceneLoaded;
@@ -516,8 +523,8 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 // Finished localization.
                 _isLocalizing = false;
                 _localizationPassedTime = 0f;
-                SetAnchorButton.gameObject.SetActive(true);
-                TerrainButton.gameObject.SetActive(true);
+                // SetAnchorButton.gameObject.SetActive(true);
+                // TerrainButton.gameObject.SetActive(true);
                 ClearAllButton.gameObject.SetActive(_anchorObjects.Count > 0);
                 SnackBarText.text = _localizationSuccessMessage;
                 foreach (var go in _anchorObjects)
@@ -537,7 +544,7 @@ namespace Google.XR.ARCoreExtensions.Samples.Geospatial
                 ResolveHistory();
             }
 
-            InfoPanel.SetActive(true);
+            // InfoPanel.SetActive(true);
             if (earthTrackingState == TrackingState.Tracking)
             {
                 InfoText.text = string.Format(

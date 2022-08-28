@@ -11,6 +11,7 @@ public class TrafficLightController : MonoBehaviour
     public Material LightGreenOff;
     
     public Vector3 anchorPosition = new Vector3();
+    public Quaternion anchorQuaternion = new Quaternion();
 
     private List<GameObject> _trafficLights = new List<GameObject>();
     private List<List<List<GameObject>>> _mosesTrafficLights = new List<List<List<GameObject>>>();
@@ -33,7 +34,7 @@ public class TrafficLightController : MonoBehaviour
             {
                 GameObject trafficLight = Instantiate(
                     TrafficLightPrefab,
-                    new Vector3(0, 0.35f, 0),
+                    new Vector3(0, 0, 0),
                     Quaternion.identity
                 );
                 
@@ -59,7 +60,7 @@ public class TrafficLightController : MonoBehaviour
             {
                 for (int j = 0; j < c_trafficLightsHeight; ++j)
                 {
-                    StartCoroutine( VisibleTrafficLight(anchorPosition + new Vector3(i * 0.4f, j * 0.75f, 0), i, j)); 
+                    StartCoroutine( VisibleTrafficLight(new Vector3(i * 0.4f, j * 0.75f, 0), i, j)); 
                 }
             }
             break;
@@ -116,9 +117,9 @@ public class TrafficLightController : MonoBehaviour
 
         GameObject trafficLight = _trafficLights[waitIndexX + c_trafficLightsWidth * waitIndexY];
 
-        trafficLight.transform.position += _position + position + new Vector3(-12.5f, 0, 18);
+        trafficLight.transform.position += anchorPosition + position + new Vector3(-12.5f, -1, 18);
         trafficLight.transform.rotation = Quaternion.Euler(0, 180, 0);
-        trafficLight.transform.RotateAround(new Vector3(0, 0, 0), Vector3.up, 90f);
+        // trafficLight.transform.RotateAround(new Vector3(0, 0, 0), Vector3.up, 0f);
         trafficLight.SetActive(true);
 
         StartCoroutine(RotateTrafficLight(trafficLight, isLeftSide));
@@ -177,7 +178,7 @@ public class TrafficLightController : MonoBehaviour
                     leftTrafficLights.Add(newTrafficLight); 
                 }
 
-                trafficLight.transform.position += new Vector3(-step, 0, 0); 
+                trafficLight.transform.position += new Vector3(0, 0, -step); 
             }
             yield return new WaitForSeconds(0.01f);
                 
@@ -200,9 +201,9 @@ public class TrafficLightController : MonoBehaviour
             for ( int j = 0; j < c_trafficLightsHeight * c_trafficLightsWidth; ++j )
             {
                 bool isLeftSide = (j % c_trafficLightsWidth) < (c_trafficLightsWidth / 2);
-                float stepX = isLeftSide ? step : -1 * step;
+                float stepX = isLeftSide ? -1 * step : step;
             
-                _trafficLights[j].transform.position += new Vector3(0, 0, stepX);
+                _trafficLights[j].transform.position += new Vector3(stepX, 0, 0);
             }
             yield return new WaitForSeconds(0.01f); 
         }
@@ -244,14 +245,15 @@ public class TrafficLightController : MonoBehaviour
             {
                 continue;
             }
+                    // rightTrafficLights[j].transform.position += new Vector3(0, 0, -step);
                     
             foreach ( var trafficLight in leftTrafficLights )
             {
-                trafficLight.transform.position += new Vector3(0, 0, step);
+                trafficLight.transform.position += new Vector3(-step, 0, 0);
             }
             foreach ( var trafficLight in rightTrafficLights )
             {
-                trafficLight.transform.position += new Vector3(0, 0, -step);
+                trafficLight.transform.position += new Vector3(step, 0, 0);
             }
                 
             yield return new WaitForSeconds(0.01f); 
